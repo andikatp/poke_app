@@ -1,20 +1,23 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:http/http.dart' as http;
-import 'package:poke_app/models/poke_model.dart';
+
+import '../models/poke_model.dart';
 
 class PokeService {
-  //fetching data from api
-  static Future<List<Result>> fetchData() async {
-    final url = Uri.parse('https://pokeapi.co/api/v2/pokemon');
-    final http.Response response = await http.get(url);
+  PokeService._();
+
+  static Future<List<PokeItemModel>> pokeData({int offset = 0, int limit = 20}) async {
+    final Uri url = Uri.parse('https://pokeapi.co/api/v2/pokemon/?offset=$offset&limit=$limit');
+    http.Response res = await http.get(url);
     try {
-      switch (response.statusCode) {
+      switch (res.statusCode) {
         case 200:
-          final decode = jsonDecode(response.body);
-          return Welcome.fromJson(decode).results ?? [];
+          final decode = jsonDecode(res.body);
+          return PokeModel.fromJson(decode).results;
         default:
-          throw Exception(response.reasonPhrase);
+          throw Exception(res.reasonPhrase);
       }
     } on SocketException catch (_) {
       rethrow;

@@ -1,57 +1,41 @@
-// To parse this JSON data, do
-//
-//     final welcome = welcomeFromJson(jsonString);
+class PokeModel {
+  PokeModel({
+    required this.count,
+    required this.next,
+    required this.previous,
+    required this.results,
+  });
 
-import 'dart:convert';
+  final int count;
+  final String? next;
+  final String? previous;
+  final List<PokeItemModel> results;
 
-Welcome welcomeFromJson(String str) => Welcome.fromJson(json.decode(str));
-
-String welcomeToJson(Welcome data) => json.encode(data.toJson());
-
-class Welcome {
-    Welcome({
-        this.count,
-        this.next,
-        this.previous,
-        this.results,
-    });
-
-    int? count;
-    String? next;
-    dynamic previous;
-    List<Result>? results;
-
-    factory Welcome.fromJson(Map<String, dynamic> json) => Welcome(
-        count: json["count"],
-        next: json["next"],
-        previous: json["previous"],
-        results: List<Result>.from(json["results"].map((x) => Result.fromJson(x))),
+  factory PokeModel.fromJson(Map<String, dynamic> json) {
+    return PokeModel(
+      count: json['count'],
+      next: json['next'],
+      previous: json['previous'],
+      results: List<PokeItemModel>.from(json['results'].map(
+        (result) => PokeItemModel.fromJson(result),
+      )),
     );
-
-    Map<String, dynamic> toJson() => {
-        "count": count,
-        "next": next,
-        "previous": previous,
-        "results": List<dynamic>.from(results!.map((x) => x.toJson())),
-    };
+  }
 }
 
-class Result {
-    Result({
-        this.name,
-        this.url,
-    });
+class PokeItemModel {
+  PokeItemModel({
+    required this.name,
+    required this.url,
+  });
 
-    String? name;
-    String? url;
+  final String name;
+  final String url;
 
-    factory Result.fromJson(Map<String, dynamic> json) => Result(
-        name: json["name"],
-        url: json["url"],
+  factory PokeItemModel.fromJson(Map<String, dynamic> json) {
+    return PokeItemModel(
+      name: json['name'],
+      url: json['url'],
     );
-
-    Map<String, dynamic> toJson() => {
-        "name": name,
-        "url": url,
-    };
+  }
 }

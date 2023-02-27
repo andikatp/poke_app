@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:poke_app/bloc/poke_bloc.dart';
-import 'package:poke_app/screens/home_screen.dart';
+
+import 'features/main/screens/main_screen.dart';
 
 void main() {
   //Hide StatusBar above
@@ -37,12 +38,12 @@ class MyApp extends StatelessWidget {
           colorScheme: ThemeData.dark().colorScheme.copyWith(
                 primary: const Color(0xFF121212),
                 secondary: const Color(0xFF808080),
-              ),  
+              ),
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: HomeScreen.routeName,
+        initialRoute: MainScreen.routeName,
         routes: {
-          HomeScreen.routeName: (context) => const HomeScreen(),
+          MainScreen.routeName: (context) => const MainScreen(),
         },
       ),
     );

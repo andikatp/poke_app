@@ -1,15 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:poke_app/models/poke_model.dart';
 import 'package:poke_app/services/poke_service.dart';
 
-class PokeBloc extends Cubit<PokeState> {
-  PokeBloc() : super(PokeState([]));
+import '../models/poke_model.dart';
 
-  //Fetch Data from poke service file
-  Future<void> fetchData() async {
+class PokeBloc extends Cubit<PokeState> {
+  PokeBloc() : super(PokeState(pokeResult: []));
+
+  Future<void> fetchData({int offset = 0, int limit = 20}) async {
     try {
-      final result = await PokeService.fetchData();
-      emit(PokeState(result));
+      final res = await PokeService.pokeData(offset: offset, limit: limit);
+      emit(PokeState(pokeResult: res));
     } catch (e) {
       rethrow;
     }
@@ -17,6 +17,8 @@ class PokeBloc extends Cubit<PokeState> {
 }
 
 class PokeState {
-  List<Result> result;
-  PokeState(this.result);
+  List<PokeItemModel>? pokeResult;
+  PokeState({
+    required this.pokeResult,
+  });
 }
