@@ -12,18 +12,11 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  late PokeBloc _pokeBloc;
   int _offset = 0;
 
   @override
-  void initState() {
-    super.initState();
-    _pokeBloc = context.read<PokeBloc>();
-    _pokeBloc.fetchData(offset: _offset);
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final prov = context.read<PokeBloc>().fetchData(offset: _offset);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Poke List'),
@@ -34,9 +27,13 @@ class _MainScreenState extends State<MainScreen> {
           FloatingActionButton(
             onPressed: () {
               setState(() {
-                _offset += 20;
+                if (_offset <= 1259) {
+                  _offset += 20;
+                } else {
+                  _offset = 1279;
+                }
               });
-              context.read<PokeBloc>().fetchData(offset: _offset);
+              prov;
             },
             child: const Text('Next'),
           ),
@@ -49,21 +46,25 @@ class _MainScreenState extends State<MainScreen> {
                   _offset = 0;
                 }
               });
-              context.read<PokeBloc>().fetchData(offset: _offset);
+              prov;
             },
             child: const Text('Previous'),
           ),
         ],
       ),
-      body: BlocBuilder<PokeBloc, PokeState>(
-        builder: (context, state) {
-          return ListView.builder(
-            itemCount: state.pokeResult!.length,
-            scrollDirection: Axis.vertical,
-            itemBuilder: (context, index) =>
-                Text(state.pokeResult![index].name),
-          );
-        },
+      body: FutureBuilder(
+        future: context.read<PokeBloc>().fetchData(offset: _offset),
+        builder: (context, snapshot) => snapshot.connectionState ==
+                ConnectionState.waiting
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : ListView.builder(
+                itemCount: context.read<PokeBloc>().state.pokeResult!.length,
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, index) => Text(
+                    context.read<PokeBloc>().state.pokeResult![index].name),
+              ),
       ),
     );
   }
